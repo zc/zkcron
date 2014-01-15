@@ -55,8 +55,7 @@ We can use a different user::
 Sentry support
 --------------
 
-If you supply a sentry dsn, then the command will get wrapped with reaven_cron::
-
+If you supply a sentry dsn, then the command will get wrapped with raven_cron::
 
   /foo
      /doit : zkcron
