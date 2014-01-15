@@ -1,0 +1,81 @@
+We often want to deploy a simple cron job::
+
+  /foo
+     /doit : zkcron
+        command = 'sleep 1'
+        schedule = '0 6 * * *'
+
+.. -> tree
+
+
+    >>> import zc.zk
+    >>> zk = zc.zk.ZK('zookeeper:2181')
+    >>> zk.import_tree(tree)
+
+    >>> import pkg_resources
+    >>> recipe = pkg_resources.load_entry_point(
+    ...     'zc.zkcron', 'zc.buildout', 'default')
+
+    >>> from zc.metarecipe.testing import Buildout
+    >>> _ = recipe(Buildout(), 'foo,doit.0', {})
+    [deployment]
+    name = foo,doit
+    recipe = zc.recipe.deployment
+    user = zope
+    [foo,doit]
+    deployment = deployment
+    directory = /etc/cron.d
+    recipe = zc.recipe.deployment:configuration
+    text = 0 6 * * * zope sleep 1
+      #
+
+We can use a different user::
+
+  /foo
+     /doit : zkcron
+        user = 'bob'
+        command = 'sleep 1'
+        schedule = '0 6 * * *'
+
+.. -> tree
+
+    >>> zk.import_tree(tree)
+    >>> _ = recipe(Buildout(), 'foo,doit.0', {})
+    [deployment]
+    name = foo,doit
+    recipe = zc.recipe.deployment
+    user = bob
+    [foo,doit]
+    deployment = deployment
+    directory = /etc/cron.d
+    recipe = zc.recipe.deployment:configuration
+    text = 0 6 * * * bob sleep 1
+      #
+
+Sentry support
+--------------
+
+If you supply a sentry dsn, then the command will get wrapped with raven_cron::
+
+  /foo
+     /doit : zkcron
+        dsn = 'https://USER@app.getsentry.com/PROJ'
+        command = 'sleep 1'
+        schedule = '0 6 * * *'
+
+
+.. -> tree
+
+    >>> zk.import_tree(tree)
+    >>> _ = recipe(Buildout(), 'foo,doit.0', {})
+    [deployment]
+    name = foo,doit
+    recipe = zc.recipe.deployment
+    user = zope
+    [foo,doit]
+    deployment = deployment
+    directory = /etc/cron.d
+    recipe = zc.recipe.deployment:configuration
+    text = SENTRY_DSN=https://USER@app.getsentry.com/PROJ
+      0 6 * * * zope /opt/zkcron/bin/raven_cron 'sleep 1'
+      #
