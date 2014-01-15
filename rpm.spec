@@ -1,5 +1,5 @@
 Name: zkcron
-Version: 0.0.4
+Version: 0
 Release: 1
 
 Summary: %{name}
