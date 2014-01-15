@@ -27,6 +27,7 @@ We often want to deploy a simple cron job::
     directory = /etc/cron.d
     recipe = zc.recipe.deployment:configuration
     text = 0 6 * * * zope sleep 1
+      #
 
 We can use a different user::
 
@@ -49,3 +50,33 @@ We can use a different user::
     directory = /etc/cron.d
     recipe = zc.recipe.deployment:configuration
     text = 0 6 * * * bob sleep 1
+      #
+
+Sentry support
+--------------
+
+If you supply a sentry dsn, then the command will get wrapped with reaven_cron::
+
+
+  /foo
+     /doit : zkcron
+        dsn = 'https://USER@app.getsentry.com/PROJ'
+        command = 'sleep 1'
+        schedule = '0 6 * * *'
+
+
+.. -> tree
+
+    >>> zk.import_tree(tree)
+    >>> _ = recipe(Buildout(), 'foo,doit.0', {})
+    [deployment]
+    name = foo,doit
+    recipe = zc.recipe.deployment
+    user = zope
+    [foo,doit]
+    deployment = deployment
+    directory = /etc/cron.d
+    recipe = zc.recipe.deployment:configuration
+    text = SENTRY_DSN=https://USER@app.getsentry.com/PROJ
+      0 6 * * * zope /opt/zkcron/raven_cron 'sleep 1'
+      #

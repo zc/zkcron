@@ -16,6 +16,13 @@ class Recipe(zc.metarecipe.Recipe):
         zkoptions = zk.properties(path, False)
 
         user = zkoptions.get('user', 'zope')
+        dsn = zkoptions.get('dsn')
+        command = str(zkoptions['command'])
+        if dsn:
+            prefix = 'SENTRY_DSN=%s\n' % dsn
+            command = "/opt/zkcron/raven_cron %r" % command
+        else:
+            prefix = ''
 
         self['deployment'] = dict(
             recipe = 'zc.recipe.deployment',
@@ -23,13 +30,15 @@ class Recipe(zc.metarecipe.Recipe):
             user=user,
             )
 
+        text = "%(schedule)s %(user)s %(command)s\n#\n" % dict(
+            user = user,
+            command = command,
+            schedule = zkoptions['schedule'],
+            )
+
         self[name] = dict(
             recipe = 'zc.recipe.deployment:configuration',
             deployment = 'deployment',
-            text = "%(schedule)s %(user)s %(command)s\n" % dict(
-                user = user,
-                command = zkoptions['command'],
-                schedule = zkoptions['schedule'],
-                ),
+            text = prefix + text,
             directory = "/etc/cron.d",
             )

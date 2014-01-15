@@ -13,12 +13,15 @@
 ##############################################################################
 name, version = 'zc.zkcron', '0'
 
-install_requires = ['setuptools', 'zc.zk', 'zc.metarecipe']
+install_requires = ['setuptools', 'zc.zk', 'zc.metarecipe', 'raven-cron']
 extras_require = dict(test=['manuel', 'mock', 'zope.testing'])
 
 entry_points = """
 [zc.buildout]
 default = zc.zkcron:Recipe
+
+[console_scripts]
+raven_cron = raven_cron.runner:run
 """
 
 from setuptools import setup
