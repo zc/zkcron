@@ -20,7 +20,7 @@ class Recipe(zc.metarecipe.Recipe):
         command = str(zkoptions['command'])
         if dsn:
             prefix = 'SENTRY_DSN=%s\n' % dsn
-            command = "/opt/zkcron/raven_cron %r" % command
+            command = "/opt/zkcron/bin/raven_cron %r" % command
         else:
             prefix = ''
 

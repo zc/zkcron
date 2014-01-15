@@ -78,5 +78,5 @@ If you supply a sentry dsn, then the command will get wrapped with reaven_cron::
     directory = /etc/cron.d
     recipe = zc.recipe.deployment:configuration
     text = SENTRY_DSN=https://USER@app.getsentry.com/PROJ
-      0 6 * * * zope /opt/zkcron/raven_cron 'sleep 1'
+      0 6 * * * zope /opt/zkcron/bin/raven_cron 'sleep 1'
       #
