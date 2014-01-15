@@ -13,7 +13,9 @@
 ##############################################################################
 name, version = 'zc.zkcron', '0'
 
-install_requires = ['setuptools', 'zc.zk', 'zc.metarecipe', 'raven-cron']
+install_requires = [
+    'setuptools', 'zc.zk', 'zc.metarecipe', 'raven-cron',
+    'zc.recipe.deployment']
 extras_require = dict(test=['manuel', 'mock', 'zope.testing'])
 
 entry_points = """
